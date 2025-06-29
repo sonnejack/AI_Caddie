@@ -1,9 +1,8 @@
 import pandas as pd
 import numpy as np
+import plotly.graph_objects as go
 from scipy.integrate import odeint
-from scipy.optimize import minimize
 from itertools import groupby
-from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 
 class golf_ballstics:
     """
@@ -17,12 +16,12 @@ class golf_ballstics:
         self.radius = None
         
         # Aerodynamic properties (initial guesses)
-        self.C_d0 = 0.24  # Base drag coefficient
-        self.C_d1 = 0.18  # Spin-dependent drag coefficient
-        self.C_d2 = 0.05  # Reynolds-dependent drag coefficient
-        self.C_d4 = 0.05  # Spin axis drag adjustment
-        self.C_l2 = 0.1   # Reynolds-dependent lift adjustment
-        self.C_l4 = 0.05  # Spin axis lift adjustment
+        self.C_d0 = 0.1796  # Base drag coefficient
+        self.C_d1 = 0.3761  # Spin-dependent drag coefficient
+        self.C_d2 = 0.0247  # Reynolds-dependent drag coefficient
+        self.C_d4 = 0.0318  # Spin axis drag adjustment
+        self.C_l2 = 0.0   # Reynolds-dependent lift adjustment
+        self.C_l4 = 0.0259  # Spin axis lift adjustment
         
         # Air properties
         self.rho = None
@@ -205,113 +204,6 @@ class golf_ballstics:
         self.df_simres['v_z'] = self.simres[:, 5]
         self.df_simres['omega'] = self.simres[:, 6]
 
-    def optimize_coefficients(self, df, maxiter=100):
-        """
-        Optimize C_d0, C_d1, C_d2, C_d4, C_l2, C_l4 to minimize MSE of carry, side, and apex differences.
-        Returns optimized coefficients and statistical metrics.
-        
-        Parameters:
-        - df (DataFrame): DataFrame containing shot data
-        - maxiter (int): Maximum iterations for optimization
-        
-        Returns:
-        - coeffs (list): Optimal coefficients [C_d0, C_d1, C_d2, C_d4, C_l2, C_l4]
-        - stats (dict): Statistical metrics (MSE, MAE, R² for carry, side, apex)
-        """
-        def objective_function(coeffs, df, model):
-            """Compute MSE for carry, side, and apex differences."""
-            model.C_d0, model.C_d1, model.C_d2, model.C_d4, model.C_l2, model.C_l4 = coeffs
-            carry_diff = []
-            side_diff = []
-            apex_diff = []
-            sim_carries = []
-            sim_laterals = []
-            sim_apexes = []
-            
-            for _, row in df.iterrows():
-                velocity_mps = row['Ball Speed (mph)'] * 0.44704
-                windspeed_mps = row['Wind Speed (mph)'] * 0.44704
-                rho = calculate_air_density(row['Temperature (F)'], row['Humidity (%)'], row['Air Pressure (psi)'])
-                
-                x_m, y_m = model.get_landingpos(
-                    velocity=velocity_mps,
-                    launch_angle_deg=row['Launch V (deg)'],
-                    horizontal_launch_angle_deg=row['Launch H (deg)'],
-                    spin_rpm=row['Spin Rate (rpm)'],
-                    spin_angle_deg=row['Spin Axis (deg)'],
-                    windspeed=windspeed_mps,
-                    windheading_deg=row['Wind Direction (deg)'],
-                    rho=rho
-                )
-                
-                sim_lateral_yd = x_m * 1.09361
-                sim_carry_yd = y_m * 1.09361
-                apex_height_m = max(model.df_simres['z'][model.df_simres['z'] >= 0])
-                sim_apex_height_ft = apex_height_m * 1.09361 * 3
-                
-                carry_diff.append(sim_carry_yd - row['Carry (yd)'])
-                side_diff.append(sim_lateral_yd - row['Lateral (yd)'])
-                apex_diff.append(sim_apex_height_ft - row['Height (ft)'])
-                sim_carries.append(sim_carry_yd)
-                sim_laterals.append(sim_lateral_yd)
-                sim_apexes.append(sim_apex_height_ft)
-            
-            # Compute MSE (equal weighting for carry, side, apex)
-            mse = np.mean(np.square(carry_diff)) + np.mean(np.square(side_diff)) + np.mean(np.square(apex_diff))
-            
-            # Store simulated values for statistical metrics
-            objective_function.sim_carries = sim_carries
-            objective_function.sim_laterals = sim_laterals
-            objective_function.sim_apexes = sim_apexes
-            objective_function.carry_diff = carry_diff
-            objective_function.side_diff = side_diff
-            objective_function.apex_diff = apex_diff
-            
-            return mse
-
-        # Initial guess for coefficients
-        initial_guess = [self.C_d0, self.C_d1, self.C_d2, self.C_d4, self.C_l2, self.C_l4]
-        
-        # Bounds to ensure physically reasonable values
-        bounds = [(0.1, 0.5), (0.1, 0.5), (0.0, 0.2), (0.0, 0.1), (0.0, 0.1), (0.0, 0.1)]
-        
-        # Run optimization
-        result = minimize(
-            fun=objective_function,
-            x0=initial_guess,
-            args=(df, self),
-            method='L-BFGS-B',
-            bounds=bounds,
-            options={'maxiter': maxiter, 'disp': True}
-        )
-        
-        # Update coefficients
-        self.C_d0, self.C_d1, self.C_d2, self.C_d4, self.C_l2, self.C_l4 = result.x
-        
-        # Compute statistical metrics
-        carry_mse = mean_squared_error(df['Carry (yd)'], objective_function.sim_carries)
-        side_mse = mean_squared_error(df['Lateral (yd)'], objective_function.sim_laterals)
-        apex_mse = mean_squared_error(df['Height (ft)'], objective_function.sim_apexes)
-        carry_mae = mean_absolute_error(df['Carry (yd)'], objective_function.sim_carries)
-        side_mae = mean_absolute_error(df['Lateral (yd)'], objective_function.sim_laterals)
-        apex_mae = mean_absolute_error(df['Height (ft)'], objective_function.sim_apexes)
-        carry_r2 = r2_score(df['Carry (yd)'], objective_function.sim_carries)
-        side_r2 = r2_score(df['Lateral (yd)'], objective_function.sim_laterals)
-        apex_r2 = r2_score(df['Height (ft)'], objective_function.sim_apexes)
-        
-        stats = {
-            'carry_mse': carry_mse,
-            'side_mse': side_mse,
-            'apex_mse': apex_mse,
-            'carry_mae': carry_mae,
-            'side_mae': side_mae,
-            'apex_mae': apex_mae,
-            'carry_r2': carry_r2,
-            'side_r2': side_r2,
-            'apex_r2': apex_r2
-        }
-        
-        return result.x, stats
 
 def calculate_air_density(T_f, RH, P_psi):
     """
@@ -335,7 +227,7 @@ df = pd.read_excel(file_path)
 numeric_columns = [
     'Ball Speed (mph)', 'Spin Rate (rpm)', 'Spin Axis (deg)', 'Launch V (deg)', 
     'Launch H (deg)', 'Wind Speed (mph)', 'Temperature (F)', 'Humidity (%)', 
-    'Air Pressure (psi)', 'Carry (yd)', 'Lateral (yd)', 'Height (ft)', 'Wind Direction (deg)'
+    'Air Pressure (psi)', 'Carry (yd)', 'Lateral (yd)', 'Height (ft)'
 ]
 for col in numeric_columns:
     df[col] = pd.to_numeric(df[col], errors='coerce')
@@ -344,25 +236,228 @@ for col in numeric_columns:
 required_columns = [
     'Ball Speed (mph)', 'Spin Rate (rpm)', 'Spin Axis (deg)', 'Launch V (deg)', 
     'Launch H (deg)', 'Wind Speed (mph)', 'Temperature (F)', 'Humidity (%)', 
-    'Air Pressure (psi)', 'Carry (yd)', 'Lateral (yd)', 'Height (ft)', 'Wind Direction (deg)'
+    'Air Pressure (psi)'
 ]
 df = df.dropna(subset=required_columns)
+
+# Function to classify a shot based on Launch H (deg) and Spin Axis (deg)
+def classify_shot(launch_h, spin_axis):
+    if launch_h < 0:
+        if spin_axis < 0:
+            return "Pull Draw"
+        elif spin_axis == 0:
+            return "Pull"
+        else:
+            return "Pull Fade"
+    elif launch_h == 0:
+        if spin_axis < 0:
+            return "Draw"
+        elif spin_axis == 0:
+            return "Straight"
+        else:
+            return "Fade"
+    else:
+        if spin_axis < 0:
+            return "Push Draw"
+        elif spin_axis == 0:
+            return "Push"
+        else:
+            return "Push Fade"
+
+# Define the output file path in the same location
+output_path = '/Users/jacksonne/Python Projects/AI_Caddie/AI_Caddie/Data_Collection/random_flightscope_data_classified.xlsx'
 
 # Initialize golf model
 golf_m = golf_ballstics()
 
-# Optimize coefficients and get statistics
-optimal_coeffs, stats = golf_m.optimize_coefficients(df, maxiter=100)
+# Add columns for simulated results
+df['sim_carry_yd'] = np.nan
+df['sim_lateral_yd'] = np.nan
+df['sim_apex_height_ft'] = np.nan
 
-# Print results
-print(f"Optimal coefficients: C_d0={optimal_coeffs[0]:.4f}, C_d1={optimal_coeffs[1]:.4f}, C_d2={optimal_coeffs[2]:.4f}, C_d4={optimal_coeffs[3]:.4f}, C_l2={optimal_coeffs[4]:.4f}, C_l4={optimal_coeffs[5]:.4f}")
-print("\nStatistical Metrics:")
-print(f"Carry MSE: {stats['carry_mse']:.4f} (yd²)")
-print(f"Side MSE: {stats['side_mse']:.4f} (yd²)")
-print(f"Apex MSE: {stats['apex_mse']:.4f} (ft²)")
-print(f"Carry MAE: {stats['carry_mae']:.4f} (yd)")
-print(f"Side MAE: {stats['side_mae']:.4f} (yd)")
-print(f"Apex MAE: {stats['apex_mae']:.4f} (ft)")
-print(f"Carry R²: {stats['carry_r2']:.4f}")
-print(f"Side R²: {stats['side_r2']:.4f}")
-print(f"Apex R²: {stats['apex_r2']:.4f}")
+# Process each shot
+for index, row in df.iterrows():
+    # Extract inputs in imperial units
+    ball_speed_mph = row['Ball Speed (mph)']
+    spin_rpm = row['Spin Rate (rpm)']
+    spin_axis_deg = row['Spin Axis (deg)']
+    launch_v_deg = row['Launch V (deg)']
+    launch_h_deg = row['Launch H (deg)']
+    wind_speed_mph = row['Wind Speed (mph)']
+    wind_direction_deg = row['Wind Direction (deg)']
+    T_f = row['Temperature (F)']
+    RH = row['Humidity (%)']
+    P_psi = row['Air Pressure (psi)']
+    
+    # Convert to SI units for simulation
+    velocity_mps = ball_speed_mph * 0.44704
+    windspeed_mps = wind_speed_mph * 0.44704
+    rho = calculate_air_density(T_f, RH, P_psi)
+    
+    # Simulate landing position
+    x_m, y_m = golf_m.get_landingpos(
+        velocity=velocity_mps,
+        launch_angle_deg=launch_v_deg,
+        horizontal_launch_angle_deg=launch_h_deg,
+        spin_rpm=spin_rpm,
+        spin_angle_deg=spin_axis_deg,
+        windspeed=windspeed_mps,
+        windheading_deg=wind_direction_deg,
+        rho=rho
+    )
+    
+    # Convert meters to yards
+    sim_lateral_yd = x_m * 1.09361
+    sim_carry_yd = y_m * 1.09361
+    apex_height_m = max(golf_m.df_simres['z'][golf_m.df_simres['z'] >= 0])
+    sim_apex_height_ft = apex_height_m * 1.09361 * 3
+    
+    # Store results
+    df.at[index, 'sim_lateral_yd'] = sim_lateral_yd
+    df.at[index, 'sim_carry_yd'] = sim_carry_yd
+    df.at[index, 'sim_apex_height_ft'] = sim_apex_height_ft
+
+# Calculate differences between simulated and actual values
+df['carry_diff'] = df['sim_carry_yd'] - df['Carry (yd)']
+df['side_diff'] = df['sim_lateral_yd'] - df['Lateral (yd)']
+df['apex_diff'] = df['sim_apex_height_ft'] - df['Height (ft)']  
+
+# Calculate percent errors, handling cases where actual value is zero
+df['carry_percent_error'] = np.where(
+    df['Carry (yd)'] != 0,
+    (abs(df['carry_diff']) / df['Carry (yd)']) * 100,
+    np.nan
+)
+df['side_percent_error'] = np.where(
+    df['Lateral (yd)'] != 0,
+    (abs(df['side_diff']) / df['Lateral (yd)']) * 100,
+    np.nan
+)
+
+# Add Shot Classification column
+df['Shot Classification'] = df.apply(lambda row: classify_shot(row['Launch H (deg)'], row['Spin Axis (deg)']), axis=1)
+
+# Save the updated DataFrame to a new Excel file
+df.to_excel(output_path, index=False)
+
+print(f"Updated DataFrame with shot classifications saved to {output_path}")
+
+# Create a comparison DataFrame with clear column names
+comparison_df = pd.DataFrame({
+    'Simulated Carry (yd)': df['sim_carry_yd'],
+    'Actual Carry (yd)': df['Carry (yd)'],
+    'Carry Difference (yd)': df['carry_diff'],
+    'Carry Percent Error (%)': df['carry_percent_error'],
+    'Simulated Side (yd)': df['sim_lateral_yd'],
+    'Actual Side (yd)': df['Lateral (yd)'],
+    'Side Difference (yd)': df['side_diff'],
+    'Side Percent Error (%)': df['side_percent_error'],
+    'Simulated Height (ft)': df['sim_apex_height_ft'] * 3,
+    'Actual Height (ft)': df['Height (ft)'],
+    'Apex Difference (ft)': df['apex_diff']
+})
+
+# Name the index as 'Shot' for clarity
+comparison_df.index.name = 'Shot'
+
+# Display the comparison table
+print(comparison_df)
+
+# --- Plotly Visualization ---
+
+# Get unique shot types
+shot_types = df['Shot Classification'].unique()
+
+# Prepare traces for each shot type
+traces = []
+buttons = []
+
+for i, shot_type in enumerate(shot_types):
+    type_df = df[df['Shot Classification'] == shot_type]
+    
+    # Simulated points trace
+    sim_trace = go.Scatter(
+        x=type_df['sim_lateral_yd'],
+        y=type_df['sim_carry_yd'],
+        mode='markers',
+        name=f'{shot_type} Simulated',
+        marker=dict(color='blue', symbol='circle'),
+        hovertext=[f"Simulated<br>Ball Speed: {row['Ball Speed (mph)']} mph<br>Launch V: {row['Launch V (deg)']} deg<br>Apex: {row['sim_apex_height_ft']:.1f} ft" 
+                   for _, row in type_df.iterrows()],
+        hoverinfo='text'
+    )
+    
+    # Actual points trace
+    act_trace = go.Scatter(
+        x=type_df['Lateral (yd)'],
+        y=type_df['Carry (yd)'],
+        mode='markers',
+        name=f'{shot_type} Actual',
+        marker=dict(color='red', symbol='x'),
+        hovertext=[f"Actual<br>Ball Speed: {row['Ball Speed (mph)']} mph<br>Launch V: {row['Launch V (deg)']} deg<br>Apex: {row['Height (ft)']:.1f} ft" 
+                   for _, row in type_df.iterrows()],
+        hoverinfo='text'
+    )
+    
+    # Line trace for error lines
+    x_lines = []
+    y_lines = []
+    for _, row in type_df.iterrows():
+        x_lines.extend([row['sim_lateral_yd'], row['Lateral (yd)'], None])
+        y_lines.extend([row['sim_carry_yd'], row['Carry (yd)'], None])
+    line_trace = go.Scatter(
+        x=x_lines,
+        y=y_lines,
+        mode='lines',
+        name=f'{shot_type} Error Lines',
+        line=dict(color='gray', width=1),
+        hoverinfo='skip'
+    )
+    
+    # Add traces to the list
+    traces.extend([sim_trace, act_trace, line_trace])
+    
+    # Create visibility list: True for this shot type's traces, False for others
+    visibility = [False] * (len(shot_types) * 3)
+    visibility[i*3 : i*3+3] = [True, True, True]
+    
+    # Create button dictionary
+    button = dict(
+        label=shot_type,
+        method='update',
+        args=[{'visible': visibility}]
+    )
+    buttons.append(button)
+
+# Create the figure
+fig = go.Figure(data=traces)
+
+# Add dropdown menu
+fig.update_layout(
+    updatemenus=[
+        dict(
+            buttons=buttons,
+            direction='down',
+            showactive=True,
+        )
+    ],
+    xaxis_title='Side Distance (yards)',
+    yaxis_title='Carry Distance (yards)',
+    title='Golf Shot Landing Positions by Shot Type'
+)
+
+# Calculate axis ranges
+all_lateral = pd.concat([df['sim_lateral_yd'], df['Lateral (yd)']])
+all_carry = pd.concat([df['sim_carry_yd'], df['Carry (yd)']])
+x_min = all_lateral.min() - 0.1 * (all_lateral.max() - all_lateral.min())
+x_max = all_lateral.max() + 0.1 * (all_lateral.max() - all_lateral.min())
+y_max = all_carry.max() * 1.1
+
+# Set axis ranges
+fig.update_layout(
+    xaxis_range=[x_min, x_max],
+    yaxis_range=[0, y_max]
+)
+
+# Show the figure
+fig.show()

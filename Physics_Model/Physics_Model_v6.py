@@ -2,11 +2,14 @@ import pandas as pd
 import numpy as np
 import plotly.graph_objects as go
 from scipy.integrate import odeint
+from scipy.optimize import minimize
+from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 from itertools import groupby
 
 class golf_ballstics:
     """
-    Golf ball flight simulation model with optimized aerodynamic coefficients including Reynolds number.
+    Golf ball flight simulation model with optimized aerodynamic coefficients, including spin axis effects.
+    Includes adaptive curvature scaling and zero curvature for zero spin axis shots with no wind.
     Based on MacDonald and Hanzely (1991), A.J. Smiths (1994), and Kothmann (2007).
     """
     
@@ -15,16 +18,17 @@ class golf_ballstics:
         self.mass = None
         self.radius = None
         
-        # Aerodynamic properties (recently optimized 6/29/2025 12:20 pm)
-        self.C_d0 = 0.1868  # Base drag coefficient
-        self.C_d1 = 0.3796  # Spin-dependent drag coefficient
-        self.C_d2 = 0.0180  # Reynolds-dependent drag coefficient
-        self.C_l2 = 0.0000   # Reynolds-dependent lift adjustment
-        self.k_decay = 0.0000  # Spin decay constant (s^-1) -- Leave at 0 does not impact meaningfully
+        # Aerodynamic properties (optimized)
+        self.C_d0 = 0.1796  # Base drag coefficient
+        self.C_d1 = 0.3761  # Spin-dependent drag coefficient
+        self.C_d2 = 0.0247  # Reynolds-dependent drag coefficient
+        self.C_d4 = 0.0318  # Spin axis drag adjustment
+        self.C_l2 = 0.0     # Reynolds-dependent lift adjustment
+        self.C_l4 = 0.0259  # Spin axis lift adjustment
         
         # Air properties
         self.rho = None
-        self.mu = 1.8e-5  # Dynamic viscosity of air (kg/m·s)
+        self.mu = 1.8e-5    # Dynamic viscosity of air (kg/m·s)
         self.Re_crit = 2e5  # Critical Reynolds number
         
         # Constants
@@ -35,9 +39,11 @@ class golf_ballstics:
         self.spin = None
         self.spin_angle = None
         self.windvelocity = []
+        self.horizontal_launch_angle_deg = None  # Store for curvature scaling
+        self.windspeed = None  # Store for wind check
         
         # ODE solver parameters
-        self.endtime = 10  # Model ball flight for 10 sec
+        self.endtime = 10   # Model ball flight for 10 sec
         self.timesteps = 100  # Initial time steps
         
         # Simulation results storage
@@ -52,22 +58,13 @@ class golf_ballstics:
                      mass=0.0455, radius=0.0213, rho=1.225, g=9.81):
         """
         Simulates golf ball flight and stores results in self.df_simres.
-        
-        Parameters:
-        - velocity (m/s): Initial ball speed
-        - launch_angle_deg (deg): Vertical launch angle
-        - horizontal_launch_angle_deg (deg): Horizontal launch angle
-        - spin_rpm (rpm): Ball spin rate
-        - spin_angle_deg (deg): Spin axis angle
-        - windspeed (m/s): Wind speed
-        - windheading_deg (deg): Wind direction (0 deg = tail wind)
-        - mass (kg), radius (m), rho (kg/m^3), g (m/s^2): Optional physical parameters
         """
         self.mass = mass
         self.radius = radius
         self.rho = rho
         self.g = g
-        
+        self.horizontal_launch_angle_deg = horizontal_launch_angle_deg
+        self.windspeed = windspeed
         self.spin = spin_rpm / 60  # Convert to rev/s
         self.spin_angle = spin_angle_deg / 180 * np.pi
         
@@ -90,19 +87,19 @@ class golf_ballstics:
         
         self.simulate()
     
-    def get_landingpos(self, check=False, *args, **kwargs):
+    def get_landingpos(self, check=False, curvature_scale_params=(-0.0578,0.8388,0.500), *args, **kwargs):
         """
         Returns landing coordinates (x, y) in meters when the ball hits the ground.
+        Applies adaptive curvature scaling: scale = a * |curvature_yd|^p + b
+        Forces zero curvature for spin_axis=0 and windspeed=0.
         
         Parameters:
         - check (bool): If True, performs sanity checks and returns an error message
+        - curvature_scale_params (tuple): Parameters (a, b, p) for scaling function
+        Parameters last optimized on 6/29/2025 3:06 pm, R^2 = 0.9463
         - *args, **kwargs: Passed to initiate_hit
-        
-        Returns:
-        - x (m): Side distance
-        - y (m): Carry distance
-        - err (str, optional): Error message if check=True
         """
+        a, b, p = curvature_scale_params
         imax = 3
         err = ''
         cont = True
@@ -135,12 +132,33 @@ class golf_ballstics:
             t = p1[2] / (p1[2] - p2[2])
             x = p1[0] + t * (p2[0] - p1[0])
             y = p1[1] + t * (p2[1] - p1[1])
+            
+            # Convert to yards for curvature calculation
+            y_yd = y * 1.09361
+            x_yd = x * 1.09361
+            psi = self.horizontal_launch_angle_deg * np.pi / 180
+            x_straight_yd = y_yd * np.tan(psi)
+            curvature_yd = x_yd - x_straight_yd
+            
+            # Check for zero spin axis and no wind
+            if abs(self.spin_angle) < 1e-6 and abs(self.windspeed) < 1e-6:
+                x_adjusted_yd = x_straight_yd  # Zero curvature
+            else:
+                # Apply adaptive scaling: scale = a * |curvature_yd|^p + b
+                scale = a * (abs(curvature_yd) ** p) + b
+                scale = max(0.1, min(scale, 2.0))  # Bound scale
+                scaled_curvature_yd = curvature_yd * scale
+                x_adjusted_yd = x_straight_yd + scaled_curvature_yd
+            
+            # Convert back to meters
+            x_adjusted = x_adjusted_yd / 1.09361
         else:
-            x, y = 0, 0
+            x_adjusted, y = 0, 0
         
         if check:
-            return x, y, err
-        return x, y
+            return x_adjusted, y, err
+        return x_adjusted, y
+    
     
     def B(self):
         area = np.pi * self.radius**2
@@ -151,27 +169,23 @@ class golf_ballstics:
         return sn
     
     def reynolds_number(self, v):
-        """Calculate Reynolds number."""
         D = 2 * self.radius
         return self.rho * v * D / self.mu
     
     def Cd(self, v, omega):
-        """Drag coefficient with Reynolds number and spin dependence."""
         sn = self.effective_spin(v, omega)
         Re = self.reynolds_number(v)
-        cd = self.C_d0 + self.C_d1 * sn + self.C_d2 / (1 + Re / self.Re_crit)
+        cd = self.C_d0 + self.C_d1 * sn + self.C_d2 / (1 + Re / self.Re_crit) + self.C_d4 * abs(np.sin(self.spin_angle))
         return cd
     
     def Cl(self, v, omega):
-        """Lift coefficient with Reynolds number adjustment."""
         sn = self.effective_spin(v, omega)
         cl = np.interp(x=sn, xp=self.sn_Cl[0], fp=self.sn_Cl[1])
         Re = self.reynolds_number(v)
-        cl_adjusted = cl * (1 + self.C_l2 * (Re / self.Re_crit))
+        cl_adjusted = cl * (1 + self.C_l2 * (Re / self.Re_crit)) * (1 + self.C_l4 * np.sin(self.spin_angle)**2)
         return cl_adjusted
     
     def model(self, state, t):
-        """ODE model including spin decay."""
         x, y, z, vx, vy, vz, omega = state
         v_ball = np.array([vx, vy, vz])
         v_rel = v_ball - self.windvelocity
@@ -186,12 +200,11 @@ class golf_ballstics:
         dvxdt = -B * u * (Cd * ux - Cl * uy * np.sin(a))
         dvydt = -B * u * (Cd * uy - Cl * (ux * np.sin(a) - uz * np.cos(a)))
         dvzdt = -self.g - B * u * (Cd * uz - Cl * uy * np.cos(a))
-        domega_dt = -self.k_decay * omega
+        domega_dt = 0  # No spin decay
         
         return [vx, vy, vz, dvxdt, dvydt, dvzdt, domega_dt]
     
     def simulate(self):
-        """Simulate ball flight with spin as a state variable."""
         self.df_simres['t'] = np.linspace(0, self.endtime, self.timesteps)
         v0 = [0, 0, 0, self.velocity[0], self.velocity[1], self.velocity[2], self.spin]
         self.simres = odeint(self.model, v0, self.df_simres['t'])
@@ -203,11 +216,9 @@ class golf_ballstics:
         self.df_simres['v_z'] = self.simres[:, 5]
         self.df_simres['omega'] = self.simres[:, 6]
 
-
 def calculate_air_density(T_f, RH, P_psi):
     """
     Calculate air density (kg/m^3) from temperature (F), relative humidity (%), and pressure (psi).
-    Uses the Arden Buck equation for saturation vapor pressure and an approximation for moist air.
     """
     T_c = (T_f - 32) * 5 / 9
     T_k = T_c + 273.15
@@ -226,7 +237,7 @@ df = pd.read_excel(file_path)
 numeric_columns = [
     'Ball Speed (mph)', 'Spin Rate (rpm)', 'Spin Axis (deg)', 'Launch V (deg)', 
     'Launch H (deg)', 'Wind Speed (mph)', 'Temperature (F)', 'Humidity (%)', 
-    'Air Pressure (psi)', 'Carry (yd)', 'Lateral (yd)', 'Height (ft)'
+    'Air Pressure (psi)', 'Carry (yd)', 'Lateral (yd)', 'Height (ft)', 'Wind Direction (deg)'
 ]
 for col in numeric_columns:
     df[col] = pd.to_numeric(df[col], errors='coerce')
@@ -235,48 +246,50 @@ for col in numeric_columns:
 required_columns = [
     'Ball Speed (mph)', 'Spin Rate (rpm)', 'Spin Axis (deg)', 'Launch V (deg)', 
     'Launch H (deg)', 'Wind Speed (mph)', 'Temperature (F)', 'Humidity (%)', 
-    'Air Pressure (psi)'
+    'Air Pressure (psi)', 'Carry (yd)', 'Lateral (yd)', 'Height (ft)', 'Wind Direction (deg)'
 ]
 df = df.dropna(subset=required_columns)
 
-# Function to classify a shot based on Launch H (deg) and Spin Axis (deg)
-def classify_shot(launch_h, spin_axis):
-    if launch_h < 0:
-        if spin_axis < 0:
+# Function to classify a shot
+def classify_shot(launch_h_deg, spin_axis_deg):
+    """
+    Classify shot based on horizontal launch angle and spin axis.
+    """
+    if launch_h_deg < 0:
+        if spin_axis_deg < 0:
             return "Pull Draw"
-        elif spin_axis == 0:
+        elif spin_axis_deg == 0:
             return "Pull"
         else:
             return "Pull Fade"
-    elif launch_h == 0:
-        if spin_axis < 0:
+    elif launch_h_deg == 0:
+        if spin_axis_deg < 0:
             return "Draw"
-        elif spin_axis == 0:
+        elif spin_axis_deg == 0:
             return "Straight"
         else:
             return "Fade"
-    else:
-        if spin_axis < 0:
+    elif launch_h_deg > 0:
+        if spin_axis_deg < 0:
             return "Push Draw"
-        elif spin_axis == 0:
+        elif spin_axis_deg == 0:
             return "Push"
-        else:
+        elif spin_axis_deg > 0:
             return "Push Fade"
-
-# Define the output file path in the same location
-output_path = '/Users/jacksonne/Python Projects/AI_Caddie/AI_Caddie/Data_Collection/random_flightscope_data_classified.xlsx'
+    else:
+        return "Unknown"
 
 # Initialize golf model
 golf_m = golf_ballstics()
 
-# Add columns for simulated results
+# Process shots with optimized scaling parameters
 df['sim_carry_yd'] = np.nan
 df['sim_lateral_yd'] = np.nan
 df['sim_apex_height_ft'] = np.nan
+df['actual_curvature_ft'] = np.nan
+df['sim_curvature_ft'] = np.nan
 
-# Process each shot
 for index, row in df.iterrows():
-    # Extract inputs in imperial units
     ball_speed_mph = row['Ball Speed (mph)']
     spin_rpm = row['Spin Rate (rpm)']
     spin_axis_deg = row['Spin Axis (deg)']
@@ -288,12 +301,10 @@ for index, row in df.iterrows():
     RH = row['Humidity (%)']
     P_psi = row['Air Pressure (psi)']
     
-    # Convert to SI units for simulation
     velocity_mps = ball_speed_mph * 0.44704
     windspeed_mps = wind_speed_mph * 0.44704
     rho = calculate_air_density(T_f, RH, P_psi)
-    
-    # Simulate landing position
+
     x_m, y_m = golf_m.get_landingpos(
         velocity=velocity_mps,
         launch_angle_deg=launch_v_deg,
@@ -305,23 +316,29 @@ for index, row in df.iterrows():
         rho=rho
     )
     
-    # Convert meters to yards
     sim_lateral_yd = x_m * 1.09361
     sim_carry_yd = y_m * 1.09361
     apex_height_m = max(golf_m.df_simres['z'][golf_m.df_simres['z'] >= 0])
     sim_apex_height_ft = apex_height_m * 1.09361 * 3
+        
+    # Calculate curvatures
+    x_straight_actual_yd = row['Carry (yd)'] * np.tan(launch_h_deg * np.pi / 180)
+    x_straight_sim_yd = sim_carry_yd * np.tan(launch_h_deg * np.pi / 180)
+    actual_curvature_ft = (row['Lateral (yd)'] - x_straight_actual_yd) * 3
+    sim_curvature_ft = (sim_lateral_yd - x_straight_sim_yd) * 3
     
-    # Store results
     df.at[index, 'sim_lateral_yd'] = sim_lateral_yd
     df.at[index, 'sim_carry_yd'] = sim_carry_yd
     df.at[index, 'sim_apex_height_ft'] = sim_apex_height_ft
+    df.at[index, 'actual_curvature_ft'] = actual_curvature_ft
+    df.at[index, 'sim_curvature_ft'] = sim_curvature_ft
 
-# Calculate differences between simulated and actual values
+# Calculate differences
 df['carry_diff'] = df['sim_carry_yd'] - df['Carry (yd)']
 df['side_diff'] = df['sim_lateral_yd'] - df['Lateral (yd)']
-df['apex_diff'] = df['sim_apex_height_ft'] - df['Height (ft)']  
+df['apex_diff'] = df['sim_apex_height_ft'] - df['Height (ft)']
 
-# Calculate percent errors, handling cases where actual value is zero
+# Calculate percent errors
 df['carry_percent_error'] = np.where(
     df['Carry (yd)'] != 0,
     (abs(df['carry_diff']) / df['Carry (yd)']) * 100,
@@ -333,15 +350,15 @@ df['side_percent_error'] = np.where(
     np.nan
 )
 
-# Add Shot Classification column
+# Add Shot Classification
 df['Shot Classification'] = df.apply(lambda row: classify_shot(row['Launch H (deg)'], row['Spin Axis (deg)']), axis=1)
 
-# Save the updated DataFrame to a new Excel file
+# Define the output file path
+output_path = '/Users/jacksonne/Python Projects/AI_Caddie/AI_Caddie/Data_Collection/random_flightscope_data_classified.xlsx'
 df.to_excel(output_path, index=False)
+print(f"\nUpdated DataFrame with shot classifications and curvature saved to {output_path}")
 
-print(f"Updated DataFrame with shot classifications saved to {output_path}")
-
-# Create a comparison DataFrame with clear column names
+# Create comparison DataFrame
 comparison_df = pd.DataFrame({
     'Simulated Carry (yd)': df['sim_carry_yd'],
     'Actual Carry (yd)': df['Carry (yd)'],
@@ -351,54 +368,46 @@ comparison_df = pd.DataFrame({
     'Actual Side (yd)': df['Lateral (yd)'],
     'Side Difference (yd)': df['side_diff'],
     'Side Percent Error (%)': df['side_percent_error'],
-    'Simulated Height (ft)': df['sim_apex_height_ft'] * 3,
+    'Simulated Height (ft)': df['sim_apex_height_ft'],
     'Actual Height (ft)': df['Height (ft)'],
-    'Apex Difference (ft)': df['apex_diff']
+    'Apex Difference (ft)': df['apex_diff'],
+    'Simulated Curvature (ft)': df['sim_curvature_ft'],
+    'Actual Curvature (ft)': df['actual_curvature_ft']
 })
-
-# Name the index as 'Shot' for clarity
 comparison_df.index.name = 'Shot'
-
-# Display the comparison table
+print("\nComparison Table:")
 print(comparison_df)
 
 # --- Plotly Visualization ---
-
-# Get unique shot types
 shot_types = df['Shot Classification'].unique()
-
-# Prepare traces for each shot type
 traces = []
 buttons = []
 
 for i, shot_type in enumerate(shot_types):
     type_df = df[df['Shot Classification'] == shot_type]
     
-    # Simulated points trace
     sim_trace = go.Scatter(
         x=type_df['sim_lateral_yd'],
         y=type_df['sim_carry_yd'],
         mode='markers',
         name=f'{shot_type} Simulated',
         marker=dict(color='blue', symbol='circle'),
-        hovertext=[f"Simulated<br>Ball Speed: {row['Ball Speed (mph)']} mph<br>Launch V: {row['Launch V (deg)']} deg<br>Apex: {row['sim_apex_height_ft']:.1f} ft" 
+        hovertext=[f"Simulated<br>Ball Speed: {row['Ball Speed (mph)']} mph<br>Launch V: {row['Launch V (deg)']} deg<br>Apex: {row['sim_apex_height_ft']:.1f} ft<br>Curvature: {row['sim_curvature_ft']:.1f} ft" 
                    for _, row in type_df.iterrows()],
         hoverinfo='text'
     )
     
-    # Actual points trace
     act_trace = go.Scatter(
         x=type_df['Lateral (yd)'],
         y=type_df['Carry (yd)'],
         mode='markers',
         name=f'{shot_type} Actual',
         marker=dict(color='red', symbol='x'),
-        hovertext=[f"Actual<br>Ball Speed: {row['Ball Speed (mph)']} mph<br>Launch V: {row['Launch V (deg)']} deg<br>Apex: {row['Height (ft)']:.1f} ft" 
+        hovertext=[f"Actual<br>Ball Speed: {row['Ball Speed (mph)']} mph<br>Launch V: {row['Launch V (deg)']} deg<br>Apex: {row['Height (ft)']:.1f} ft<br>Curvature: {row['actual_curvature_ft']:.1f} ft" 
                    for _, row in type_df.iterrows()],
         hoverinfo='text'
     )
     
-    # Line trace for error lines
     x_lines = []
     y_lines = []
     for _, row in type_df.iterrows():
@@ -413,14 +422,10 @@ for i, shot_type in enumerate(shot_types):
         hoverinfo='skip'
     )
     
-    # Add traces to the list
     traces.extend([sim_trace, act_trace, line_trace])
     
-    # Create visibility list: True for this shot type's traces, False for others
     visibility = [False] * (len(shot_types) * 3)
     visibility[i*3 : i*3+3] = [True, True, True]
-    
-    # Create button dictionary
     button = dict(
         label=shot_type,
         method='update',
@@ -428,35 +433,17 @@ for i, shot_type in enumerate(shot_types):
     )
     buttons.append(button)
 
-# Create the figure
 fig = go.Figure(data=traces)
-
-# Add dropdown menu
 fig.update_layout(
-    updatemenus=[
-        dict(
-            buttons=buttons,
-            direction='down',
-            showactive=True,
-        )
-    ],
+    updatemenus=[dict(buttons=buttons, direction='down', showactive=True)],
     xaxis_title='Side Distance (yards)',
     yaxis_title='Carry Distance (yards)',
-    title='Golf Shot Landing Positions by Shot Type'
+    title=f'Golf Shot Landing Positions by Shot Type)'
 )
-
-# Calculate axis ranges
 all_lateral = pd.concat([df['sim_lateral_yd'], df['Lateral (yd)']])
 all_carry = pd.concat([df['sim_carry_yd'], df['Carry (yd)']])
 x_min = all_lateral.min() - 0.1 * (all_lateral.max() - all_lateral.min())
 x_max = all_lateral.max() + 0.1 * (all_lateral.max() - all_lateral.min())
 y_max = all_carry.max() * 1.1
-
-# Set axis ranges
-fig.update_layout(
-    xaxis_range=[x_min, x_max],
-    yaxis_range=[0, y_max]
-)
-
-# Show the figure
+fig.update_layout(xaxis_range=[x_min, x_max], yaxis_range=[0, y_max])
 fig.show()
