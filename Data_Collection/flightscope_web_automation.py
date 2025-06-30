@@ -17,12 +17,12 @@ def generate_combinations(n):
     Generate n combinations of shot parameters.
     Returns: List of tuples (ball_speed, launch_angle, spin, spin_axis, spin_axis_dir, h_launch, h_launch_dir).
     """
-    ball_speeds = np.linspace(110, 180, 50)  # e.g., [50, 100, 150, 200]
-    launch_angles = np.linspace(10, 30, 20)  # e.g., [1, 12, 23, 34, 45]
-    spins = np.linspace(2000, 8000, 30)   # e.g., [1000, 6500, 12000]
-    spin_axes = np.linspace(0, 15, 8)      # e.g., [0, 7.5, 15]
+    ball_speeds = np.linspace(175, 208, 40)  # e.g., [50, 100, 150, 200]
+    launch_angles = np.linspace(6, 18, 20)  # e.g., [1, 12, 23, 34, 45]
+    spins = np.linspace(1200, 3500, 20)   # e.g., [1000, 6500, 12000]
+    spin_axes = np.linspace(0, 12, 13)      # e.g., [0, 7.5, 15]
     spin_axis_dirs = ['Left', 'Right']
-    h_launches = np.linspace(0, 10, 8)     # e.g., [0, 5, 10]
+    h_launches = np.linspace(0, 7, 8)     # e.g., [0, 5, 10]
     h_launch_dirs = ['Left', 'Right']
     
     # Generate all combinations
@@ -75,7 +75,7 @@ def main():
         time.sleep(2)  # Give user time to focus browser
         
         # Generate parameter combinations
-        combinations = generate_combinations(200)
+        combinations = generate_combinations(120)
 
         # Save combinations to CSV
         pd.DataFrame(combinations, columns=[
@@ -144,7 +144,7 @@ def main():
             # Press Shift+Tab 8 times to return to Vertical Launch Angle
             for _ in range(8):
                 pyautogui.hotkey('shift', 'tab')
-                time.sleep(0.1)
+                time.sleep(0.15)
         
             elapsed = time.time() - start_time
             iterations_done = i + 1
@@ -153,7 +153,7 @@ def main():
             eta_seconds = remaining_iters * avg_time_per_iter
             eta_formatted = time.strftime("%H:%M:%S", time.gmtime(eta_seconds))
             print(f"Iteration {iterations_done}/{len(combinations)}, ETA: {eta_formatted}")
-            time.sleep(0.25) 
+            time.sleep(0.4) 
                 
    
     except Exception as e:

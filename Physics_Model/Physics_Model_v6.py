@@ -18,13 +18,13 @@ class golf_ballstics:
         self.mass = None
         self.radius = None
         
-        # Aerodynamic properties (optimized)
-        self.C_d0 = 0.1796  # Base drag coefficient
-        self.C_d1 = 0.3761  # Spin-dependent drag coefficient
-        self.C_d2 = 0.0247  # Reynolds-dependent drag coefficient
-        self.C_d4 = 0.0318  # Spin axis drag adjustment
+        # Aerodynamic properties (optimized 6/29/2025 6:25 pm)
+        self.C_d0 = 0.1501  # Base drag coefficient
+        self.C_d1 = 0.3010  # Spin-dependent drag coefficient
+        self.C_d2 = 0.0800  # Reynolds-dependent drag coefficient
+        self.C_d4 = 0.0219  # Spin axis drag adjustment
         self.C_l2 = 0.0     # Reynolds-dependent lift adjustment
-        self.C_l4 = 0.0259  # Spin axis lift adjustment
+        self.C_l4 = 0.0330  # Spin axis lift adjustment
         
         # Air properties
         self.rho = None
@@ -87,7 +87,7 @@ class golf_ballstics:
         
         self.simulate()
     
-    def get_landingpos(self, check=False, curvature_scale_params=(-0.0578,0.8388,0.500), *args, **kwargs):
+    def get_landingpos(self, check=False, curvature_scale_params=(-0.0666,0.8673,0.5023), *args, **kwargs):
         """
         Returns landing coordinates (x, y) in meters when the ball hits the ground.
         Applies adaptive curvature scaling: scale = a * |curvature_yd|^p + b
@@ -230,7 +230,8 @@ def calculate_air_density(T_f, RH, P_psi):
     return rho
 
 # Load Excel data
-file_path = '/Users/jacksonne/Python Projects/AI_Caddie/AI_Caddie/Data_Collection/random_flightscope_data.xlsx'
+#file_path = '/Users/jacksonne/Python Projects/AI_Caddie/AI_Caddie/Data_Collection/random_flightscope_data.xlsx'
+file_path = '/Users/jacksonne/Python Projects/AI_Caddie/AI_Caddie/Data_Collection/flightscope_data_reasonable_shots.xlsx'
 df = pd.read_excel(file_path)
 
 # Convert columns to numeric
@@ -392,8 +393,15 @@ for i, shot_type in enumerate(shot_types):
         mode='markers',
         name=f'{shot_type} Simulated',
         marker=dict(color='blue', symbol='circle'),
-        hovertext=[f"Simulated<br>Ball Speed: {row['Ball Speed (mph)']} mph<br>Launch V: {row['Launch V (deg)']} deg<br>Apex: {row['sim_apex_height_ft']:.1f} ft<br>Curvature: {row['sim_curvature_ft']:.1f} ft" 
-                   for _, row in type_df.iterrows()],
+        hovertext=[
+            f"Simulated<br>"
+            f"Carry: {row['sim_carry_yd']:.0f}, Lateral: {row['sim_lateral_yd']:.0f}<br>"
+            f"Ball Speed: {row['Ball Speed (mph)']} mph<br>"
+            f"Launch V: {row['Launch V (deg)']} deg<br>"
+            f"Apex: {row['sim_apex_height_ft']:.1f} ft<br>"
+            f"Curvature: {row['sim_curvature_ft']:.1f} ft"
+            for _, row in type_df.iterrows()
+        ],
         hoverinfo='text'
     )
     
@@ -403,11 +411,18 @@ for i, shot_type in enumerate(shot_types):
         mode='markers',
         name=f'{shot_type} Actual',
         marker=dict(color='red', symbol='x'),
-        hovertext=[f"Actual<br>Ball Speed: {row['Ball Speed (mph)']} mph<br>Launch V: {row['Launch V (deg)']} deg<br>Apex: {row['Height (ft)']:.1f} ft<br>Curvature: {row['actual_curvature_ft']:.1f} ft" 
-                   for _, row in type_df.iterrows()],
+        hovertext=[
+            f"Actual<br>"
+            f"Carry: {row['Carry (yd)']:.0f}, Lateral: {row['Lateral (yd)']:.0f}<br>"
+            f"Ball Speed: {row['Ball Speed (mph)']} mph<br>"
+            f"Launch V: {row['Launch V (deg)']} deg<br>"
+            f"Apex: {row['Height (ft)']:.1f} ft<br>"
+            f"Curvature: {row['actual_curvature_ft']:.1f} ft"
+            for _, row in type_df.iterrows()
+        ],
         hoverinfo='text'
     )
-    
+
     x_lines = []
     y_lines = []
     for _, row in type_df.iterrows():
