@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>TPC River's Bend – Cesium Terrain + OSM Golf Features</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- CesiumJS (replace version if newer) -->
+  <link href="https://cesium.com/downloads/cesiumjs/releases/1.115/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+  <script src="https://cesium.com/downloads/cesiumjs/releases/1.115/Build/Cesium/Cesium.js"></script>
+  <!-- OSM → GeoJSON converter -->
+  <script src="https://unpkg.com/osmtogeojson@3.0.0/dist/osmtogeojson.js"></script>
+  <style>
+    html, body, #cesiumContainer { width: 100%; height: 100%; margin: 0; padding: 0; overflow: hidden; }
+    .cesium-credit-light { display: none; } /* hide Cesium credit bar if desired */
+  </style>
+</head>
+<body>
+  <div id="cesiumContainer"></div>
+  <script>
+    /////////////////////////////////////////////////////////////////////////
+    // 1) CesiumJS viewer setup                                              //
+    /////////////////////////////////////////////////////////////////////////
+    // 👉 Replace with your own token from https://ion.cesium.com/           //
+    Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIwM2RkYmZmMi0wOGU5LTQ3ZmItOGY3Yy01YWI0OGM2NDQzMjEiLCJpZCI6MzE3NDQwLCJpYXQiOjE3NTEzNzQ2NDl9.PzVT68ZKLTu3i2sfPSARSx6FfEfoF5n0GMW1FeCIieg';
+
+    const viewer = new Cesium.Viewer('cesiumContainer', {
+      terrainProvider: Cesium.createWorldTerrain(),
+      selectionIndicator: false,
+      baseLayerPicker: false,
+      timeline: false,
+      animation: false
+    });
+
+    /////////////////////////////////////////////////////////////////////////
+    // 2) Define the bounding box for TPC River's Bend                      //
+    //    (southLat, westLon, northLat, eastLon)                            //
+    /////////////////////////////////////////////////////////////////////////
+    const bbox = {
+      south: 39.3280,
+      west: -84.3110,
+      north: 39.3350,
+      east: -84.3010
+    };
+
+    // Helper: build Overpass API query for golf features + routing
+    function buildOverpassQuery(b) {
+      const bboxStr = `${b.south},${b.west},${b.north},${b.east}`;
+      return `[out:json][timeout:25];\n(
+        way["golf"~"tee|fairway|green|bunker|water_hazard"](${bboxStr});
+        relation["type"="route"]["route"="golf"](${bboxStr});
+      );\nout body;>;out skel qt;`;
+    }
+
+    /////////////////////////////////////////////////////////////////////////
+    // 3) Fetch OSM golf features, convert to GeoJSON, clamp to ground      //
+    /////////////////////////////////////////////////////////////////////////
+    (async function loadOSMGolfFeatures() {
+      try {
+        const query = buildOverpassQuery(bbox);
+        const url = `https://overpass-api.de/api/interpreter?data=${encodeURIComponent(query)}`;
+        const response = await fetch(url);
+        const osmJSON = await response.json();
+
+        // Convert to GeoJSON
+        const geojson = osmtogeojson(osmJSON);
+
+        // Create a temporary Blob URL for Cesium loader
+        const blob = new Blob([JSON.stringify(geojson)], { type: 'application/json' });
+        const blobUrl = URL.createObjectURL(blob);
+
+        // Load into Cesium, clamped to terrain
+        const dataSource = await Cesium.GeoJsonDataSource.load(blobUrl, {
+          clampToGround: true
+        });
+        viewer.dataSources.add(dataSource);
+
+        // Style entities based on golf feature type
+        const entities = dataSource.entities.values;
+        for (let entity of entities) {
+          const props = entity.properties;
+          if (!props || !props.golf) continue;
+          const type = props.golf.getValue();
+
+          // Determine color & material
+          let color;
+          switch (type) {
+            case 'tee':          color = Cesium.Color.SKYBLUE; break;
+            case 'fairway':      color = Cesium.Color.GREEN.withAlpha(0.6); break;
+            case 'green':        color = Cesium.Color.LIME.withAlpha(0.7); break;
+            case 'bunker':       color = Cesium.Color.SANDYBROWN.withAlpha(0.7); break;
+            case 'water_hazard': color = Cesium.Color.ROYALBLUE.withAlpha(0.6); break;
+            default:             color = Cesium.Color.GOLD.withAlpha(0.6); break;
+          }
+
+          // Apply style depending on geometry
+          if (Cesium.defined(entity.polygon)) {
+            entity.polygon.material = color;
+            entity.polygon.outline = false;
+          } else if (Cesium.defined(entity.polyline)) {
+            entity.polyline.width = 3;
+            entity.polyline.material = new Cesium.ColorMaterialProperty(color);
+          } else if (Cesium.defined(entity.point)) {
+            entity.point.pixelSize = 10;
+            entity.point.color = color;
+          }
+        }
+
+        // Fly camera to course
+        viewer.flyTo(dataSource, {
+          duration: 2,
+          offset: new Cesium.HeadingPitchRange(0, -Math.PI / 6, 800)
+        });
+      } catch (err) {
+        console.error('Failed to load OSM golf features:', err);
+      }
+    })();
+
+    /////////////////////////////////////////////////////////////////////////
+    // 4) Optional: Outer‑space background (comment out if undesired)       //
+    /////////////////////////////////////////////////////////////////////////
+    // Example starfield images (replace with your own). Download royalty‑
+    // free starbox textures and place paths below. Must point to 6 images.
+    // viewer.scene.skyBox = new Cesium.SkyBox({
+    //   sources: {
+    //     positiveX: 'stars/px.jpg',
+    //     negativeX: 'stars/nx.jpg',
+    //     positiveY: 'stars/py.jpg',
+    //     negativeY: 'stars/ny.jpg',
+    //     positiveZ: 'stars/pz.jpg',
+    //     negativeZ: 'stars/nz.jpg'
+    //   }
+    // });
+
+    // Uncomment to hide atmosphere/globe shading for a deep‑space vibe
+    // viewer.scene.skyAtmosphere = undefined;
+  </script>
+</body>
+</html>
