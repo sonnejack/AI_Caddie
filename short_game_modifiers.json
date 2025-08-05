@@ -1,0 +1,1442 @@
+{
+  "flat_flat_ flat_>45%": {
+    "modifier": -0.2,
+    "difficulty": 1,
+    "rationale": "",
+    "color": {
+      "r": 34,
+      "g": 139,
+      "b": 34
+    }
+  },
+  "flat_ uphill_ uphill_>45%": {
+    "modifier": -0.17500000000000002,
+    "difficulty": 1,
+    "rationale": "",
+    "color": {
+      "r": 44,
+      "g": 149,
+      "b": 44
+    }
+  },
+  "flat_flat_ uphill_>45%": {
+    "modifier": -0.17500000000000002,
+    "difficulty": 1,
+    "rationale": "",
+    "color": {
+      "r": 44,
+      "g": 149,
+      "b": 44
+    }
+  },
+  "flat_flat_ flat_20-45%": {
+    "modifier": -0.15000000000000002,
+    "difficulty": 2,
+    "rationale": "",
+    "color": {
+      "r": 55,
+      "g": 159,
+      "b": 55
+    }
+  },
+  "flat_flat_ downhill_>45%": {
+    "modifier": -0.15000000000000002,
+    "difficulty": 2,
+    "rationale": "",
+    "color": {
+      "r": 55,
+      "g": 159,
+      "b": 55
+    }
+  },
+  " uphill_ uphill_ uphill_>45%": {
+    "modifier": -0.15000000000000002,
+    "difficulty": 2,
+    "rationale": "",
+    "color": {
+      "r": 55,
+      "g": 159,
+      "b": 55
+    }
+  },
+  "flat_ uphill_ flat_>45%": {
+    "modifier": -0.15000000000000002,
+    "difficulty": 2,
+    "rationale": "",
+    "color": {
+      "r": 55,
+      "g": 159,
+      "b": 55
+    }
+  },
+  " downhill_flat_ flat_>45%": {
+    "modifier": -0.15000000000000002,
+    "difficulty": 2,
+    "rationale": "",
+    "color": {
+      "r": 55,
+      "g": 159,
+      "b": 55
+    }
+  },
+  " downhill_flat_ uphill_>45%": {
+    "modifier": -0.1375,
+    "difficulty": 2,
+    "rationale": "",
+    "color": {
+      "r": 60,
+      "g": 164,
+      "b": 60
+    }
+  },
+  " uphill_flat_ flat_20-45%": {
+    "modifier": -0.125,
+    "difficulty": 2,
+    "rationale": "",
+    "color": {
+      "r": 65,
+      "g": 170,
+      "b": 65
+    }
+  },
+  "flat_ uphill_ downhill_>45%": {
+    "modifier": -0.125,
+    "difficulty": 2,
+    "rationale": "",
+    "color": {
+      "r": 65,
+      "g": 170,
+      "b": 65
+    }
+  },
+  " downhill_flat_ downhill_>45%": {
+    "modifier": -0.125,
+    "difficulty": 2,
+    "rationale": "",
+    "color": {
+      "r": 65,
+      "g": 170,
+      "b": 65
+    }
+  },
+  " sidehill_ uphill_ uphill_>45%": {
+    "modifier": -0.125,
+    "difficulty": 2,
+    "rationale": "",
+    "color": {
+      "r": 65,
+      "g": 170,
+      "b": 65
+    }
+  },
+  "flat_ downhill_ flat_>45%": {
+    "modifier": -0.125,
+    "difficulty": 2,
+    "rationale": "",
+    "color": {
+      "r": 65,
+      "g": 170,
+      "b": 65
+    }
+  },
+  " uphill_ uphill_ flat_>45%": {
+    "modifier": -0.125,
+    "difficulty": 2,
+    "rationale": "",
+    "color": {
+      "r": 65,
+      "g": 170,
+      "b": 65
+    }
+  },
+  " uphill_flat_ flat_>45%": {
+    "modifier": -0.125,
+    "difficulty": 2,
+    "rationale": "",
+    "color": {
+      "r": 65,
+      "g": 170,
+      "b": 65
+    }
+  },
+  "flat_ downhill_ downhill_>45%": {
+    "modifier": -0.1,
+    "difficulty": 3,
+    "rationale": "",
+    "color": {
+      "r": 75,
+      "g": 180,
+      "b": 75
+    }
+  },
+  " uphill_ uphill_ downhill_>45%": {
+    "modifier": -0.1,
+    "difficulty": 3,
+    "rationale": "",
+    "color": {
+      "r": 75,
+      "g": 180,
+      "b": 75
+    }
+  },
+  " uphill_flat_ uphill_>45%": {
+    "modifier": -0.1,
+    "difficulty": 3,
+    "rationale": "",
+    "color": {
+      "r": 75,
+      "g": 180,
+      "b": 75
+    }
+  },
+  " sidehill_flat_ flat_>45%": {
+    "modifier": -0.1,
+    "difficulty": 3,
+    "rationale": "",
+    "color": {
+      "r": 75,
+      "g": 180,
+      "b": 75
+    }
+  },
+  "flat_ sidehill_ flat_>45%": {
+    "modifier": -0.08750000000000001,
+    "difficulty": 3,
+    "rationale": "",
+    "color": {
+      "r": 81,
+      "g": 185,
+      "b": 81
+    }
+  },
+  " sidehill_ uphill_ flat_>45%": {
+    "modifier": -0.08750000000000001,
+    "difficulty": 3,
+    "rationale": "",
+    "color": {
+      "r": 81,
+      "g": 185,
+      "b": 81
+    }
+  },
+  " uphill_ uphill_ flat_20-45%": {
+    "modifier": -0.07500000000000001,
+    "difficulty": 3,
+    "rationale": "",
+    "color": {
+      "r": 86,
+      "g": 190,
+      "b": 86
+    }
+  },
+  "flat_ uphill_ flat_20-45%": {
+    "modifier": -0.07500000000000001,
+    "difficulty": 3,
+    "rationale": "",
+    "color": {
+      "r": 86,
+      "g": 190,
+      "b": 86
+    }
+  },
+  " sidehill_ uphill_ downhill_>45%": {
+    "modifier": -0.07500000000000001,
+    "difficulty": 3,
+    "rationale": "",
+    "color": {
+      "r": 86,
+      "g": 190,
+      "b": 86
+    }
+  },
+  " uphill_flat_ downhill_>45%": {
+    "modifier": -0.07500000000000001,
+    "difficulty": 3,
+    "rationale": "",
+    "color": {
+      "r": 86,
+      "g": 190,
+      "b": 86
+    }
+  },
+  "flat_ downhill_ uphill_>45%": {
+    "modifier": -0.07500000000000001,
+    "difficulty": 3,
+    "rationale": "",
+    "color": {
+      "r": 86,
+      "g": 190,
+      "b": 86
+    }
+  },
+  " sidehill_flat_ uphill_>45%": {
+    "modifier": -0.07500000000000001,
+    "difficulty": 3,
+    "rationale": "",
+    "color": {
+      "r": 86,
+      "g": 190,
+      "b": 86
+    }
+  },
+  " uphill_ sidehill_ flat_>45%": {
+    "modifier": -0.07500000000000001,
+    "difficulty": 3,
+    "rationale": "",
+    "color": {
+      "r": 86,
+      "g": 190,
+      "b": 86
+    }
+  },
+  "flat_flat_ downhill_20-45%": {
+    "modifier": -0.0625,
+    "difficulty": 3,
+    "rationale": "",
+    "color": {
+      "r": 91,
+      "g": 195,
+      "b": 91
+    }
+  },
+  " uphill_ sidehill_ flat_20-45%": {
+    "modifier": -0.0625,
+    "difficulty": 3,
+    "rationale": "",
+    "color": {
+      "r": 91,
+      "g": 195,
+      "b": 91
+    }
+  },
+  "flat_ sidehill_ flat_20-45%": {
+    "modifier": -0.0625,
+    "difficulty": 3,
+    "rationale": "",
+    "color": {
+      "r": 91,
+      "g": 195,
+      "b": 91
+    }
+  },
+  " sidehill_flat_ downhill_>45%": {
+    "modifier": -0.0625,
+    "difficulty": 3,
+    "rationale": "",
+    "color": {
+      "r": 91,
+      "g": 195,
+      "b": 91
+    }
+  },
+  " sidehill_ sidehill_ flat_>45%": {
+    "modifier": -0.0625,
+    "difficulty": 3,
+    "rationale": "",
+    "color": {
+      "r": 91,
+      "g": 195,
+      "b": 91
+    }
+  },
+  " downhill_ uphill_ flat_>45%": {
+    "modifier": -0.0625,
+    "difficulty": 3,
+    "rationale": "",
+    "color": {
+      "r": 91,
+      "g": 195,
+      "b": 91
+    }
+  },
+  " uphill_ downhill_ flat_20-45%": {
+    "modifier": -0.05,
+    "difficulty": 4,
+    "rationale": "",
+    "color": {
+      "r": 96,
+      "g": 200,
+      "b": 96
+    }
+  },
+  "flat_ sidehill_ downhill_>45%": {
+    "modifier": -0.05,
+    "difficulty": 4,
+    "rationale": "",
+    "color": {
+      "r": 96,
+      "g": 200,
+      "b": 96
+    }
+  },
+  " downhill_ uphill_ downhill_>45%": {
+    "modifier": -0.05,
+    "difficulty": 4,
+    "rationale": "",
+    "color": {
+      "r": 96,
+      "g": 200,
+      "b": 96
+    }
+  },
+  "flat_ downhill_ flat_20-45%": {
+    "modifier": -0.037500000000000006,
+    "difficulty": 4,
+    "rationale": "",
+    "color": {
+      "r": 150,
+      "g": 150,
+      "b": 150
+    }
+  },
+  " uphill_flat_ downhill_20-45%": {
+    "modifier": -0.025,
+    "difficulty": 4,
+    "rationale": "",
+    "color": {
+      "r": 150,
+      "g": 150,
+      "b": 150
+    }
+  },
+  " uphill_flat_ uphill_20-45%": {
+    "modifier": -0.025,
+    "difficulty": 4,
+    "rationale": "",
+    "color": {
+      "r": 150,
+      "g": 150,
+      "b": 150
+    }
+  },
+  "flat_flat_ uphill_20-45%": {
+    "modifier": -0.025,
+    "difficulty": 4,
+    "rationale": "",
+    "color": {
+      "r": 150,
+      "g": 150,
+      "b": 150
+    }
+  },
+  " sidehill_flat_ flat_20-45%": {
+    "modifier": -0.025,
+    "difficulty": 4,
+    "rationale": "",
+    "color": {
+      "r": 150,
+      "g": 150,
+      "b": 150
+    }
+  },
+  " uphill_ sidehill_ downhill_>45%": {
+    "modifier": -0.025,
+    "difficulty": 4,
+    "rationale": "",
+    "color": {
+      "r": 150,
+      "g": 150,
+      "b": 150
+    }
+  },
+  "flat_ sidehill_ uphill_>45%": {
+    "modifier": -0.025,
+    "difficulty": 4,
+    "rationale": "",
+    "color": {
+      "r": 150,
+      "g": 150,
+      "b": 150
+    }
+  },
+  " downhill_ sidehill_ flat_>45%": {
+    "modifier": -0.025,
+    "difficulty": 4,
+    "rationale": "",
+    "color": {
+      "r": 150,
+      "g": 150,
+      "b": 150
+    }
+  },
+  " downhill_flat_ flat_20-45%": {
+    "modifier": -0.0125,
+    "difficulty": 4,
+    "rationale": "",
+    "color": {
+      "r": 150,
+      "g": 150,
+      "b": 150
+    }
+  },
+  " uphill_ downhill_ downhill_>45%": {
+    "modifier": -0.0125,
+    "difficulty": 4,
+    "rationale": "",
+    "color": {
+      "r": 150,
+      "g": 150,
+      "b": 150
+    }
+  },
+  " downhill_ downhill_ downhill_>45%": {
+    "modifier": 0,
+    "difficulty": 5,
+    "rationale": "",
+    "color": {
+      "r": 150,
+      "g": 150,
+      "b": 150
+    }
+  },
+  " downhill_ sidehill_ downhill_>45%": {
+    "modifier": 0,
+    "difficulty": 5,
+    "rationale": "",
+    "color": {
+      "r": 150,
+      "g": 150,
+      "b": 150
+    }
+  },
+  " sidehill_ sidehill_ downhill_>45%": {
+    "modifier": 0,
+    "difficulty": 5,
+    "rationale": "",
+    "color": {
+      "r": 150,
+      "g": 150,
+      "b": 150
+    }
+  },
+  " sidehill_ sidehill_ uphill_>45%": {
+    "modifier": 0,
+    "difficulty": 5,
+    "rationale": "",
+    "color": {
+      "r": 150,
+      "g": 150,
+      "b": 150
+    }
+  },
+  " uphill_ sidehill_ uphill_>45%": {
+    "modifier": 0,
+    "difficulty": 5,
+    "rationale": "",
+    "color": {
+      "r": 150,
+      "g": 150,
+      "b": 150
+    }
+  },
+  " downhill_ downhill_ flat_>45%": {
+    "modifier": 0,
+    "difficulty": 5,
+    "rationale": "",
+    "color": {
+      "r": 150,
+      "g": 150,
+      "b": 150
+    }
+  },
+  " sidehill_ uphill_ flat_20-45%": {
+    "modifier": 0.017499999999999998,
+    "difficulty": 5,
+    "rationale": "",
+    "color": {
+      "r": 150,
+      "g": 150,
+      "b": 150
+    }
+  },
+  " sidehill_ downhill_ uphill_>45%": {
+    "modifier": 0.017499999999999998,
+    "difficulty": 5,
+    "rationale": "",
+    "color": {
+      "r": 150,
+      "g": 150,
+      "b": 150
+    }
+  },
+  " sidehill_ downhill_ flat_>45%": {
+    "modifier": 0.017499999999999998,
+    "difficulty": 5,
+    "rationale": "",
+    "color": {
+      "r": 150,
+      "g": 150,
+      "b": 150
+    }
+  },
+  " uphill_ uphill_ downhill_20-45%": {
+    "modifier": 0.034999999999999996,
+    "difficulty": 5,
+    "rationale": "",
+    "color": {
+      "r": 150,
+      "g": 150,
+      "b": 150
+    }
+  },
+  "flat_ uphill_ downhill_20-45%": {
+    "modifier": 0.034999999999999996,
+    "difficulty": 5,
+    "rationale": "",
+    "color": {
+      "r": 150,
+      "g": 150,
+      "b": 150
+    }
+  },
+  " sidehill_ sidehill_ flat_20-45%": {
+    "modifier": 0.034999999999999996,
+    "difficulty": 5,
+    "rationale": "",
+    "color": {
+      "r": 150,
+      "g": 150,
+      "b": 150
+    }
+  },
+  " downhill_ uphill_ flat_20-45%": {
+    "modifier": 0.034999999999999996,
+    "difficulty": 5,
+    "rationale": "",
+    "color": {
+      "r": 150,
+      "g": 150,
+      "b": 150
+    }
+  },
+  " sidehill_ downhill_ downhill_>45%": {
+    "modifier": 0.034999999999999996,
+    "difficulty": 5,
+    "rationale": "",
+    "color": {
+      "r": 150,
+      "g": 150,
+      "b": 150
+    }
+  },
+  " downhill_ downhill_ uphill_>45%": {
+    "modifier": 0.034999999999999996,
+    "difficulty": 5,
+    "rationale": "",
+    "color": {
+      "r": 150,
+      "g": 150,
+      "b": 150
+    }
+  },
+  " uphill_ downhill_ uphill_>45%": {
+    "modifier": 0.034999999999999996,
+    "difficulty": 5,
+    "rationale": "",
+    "color": {
+      "r": 150,
+      "g": 150,
+      "b": 150
+    }
+  },
+  " downhill_ sidehill_ uphill_>45%": {
+    "modifier": 0.034999999999999996,
+    "difficulty": 5,
+    "rationale": "",
+    "color": {
+      "r": 150,
+      "g": 150,
+      "b": 150
+    }
+  },
+  " uphill_ uphill_ uphill_20-45%": {
+    "modifier": 0.05249999999999999,
+    "difficulty": 5,
+    "rationale": "",
+    "color": {
+      "r": 150,
+      "g": 50,
+      "b": 50
+    }
+  },
+  "flat_ uphill_ uphill_20-45%": {
+    "modifier": 0.05249999999999999,
+    "difficulty": 5,
+    "rationale": "",
+    "color": {
+      "r": 150,
+      "g": 50,
+      "b": 50
+    }
+  },
+  " downhill_ sidehill_ flat_20-45%": {
+    "modifier": 0.05249999999999999,
+    "difficulty": 5,
+    "rationale": "",
+    "color": {
+      "r": 150,
+      "g": 50,
+      "b": 50
+    }
+  },
+  " uphill_ downhill_ flat_>45%": {
+    "modifier": 0.05249999999999999,
+    "difficulty": 5,
+    "rationale": "",
+    "color": {
+      "r": 150,
+      "g": 50,
+      "b": 50
+    }
+  },
+  " downhill_ uphill_ uphill_>45%": {
+    "modifier": 0.06999999999999999,
+    "difficulty": 6,
+    "rationale": "",
+    "color": {
+      "r": 153,
+      "g": 47,
+      "b": 47
+    }
+  },
+  " uphill_ sidehill_ downhill_20-45%": {
+    "modifier": 0.0875,
+    "difficulty": 6,
+    "rationale": "",
+    "color": {
+      "r": 156,
+      "g": 45,
+      "b": 45
+    }
+  },
+  " sidehill_ downhill_ flat_20-45%": {
+    "modifier": 0.0875,
+    "difficulty": 6,
+    "rationale": "",
+    "color": {
+      "r": 156,
+      "g": 45,
+      "b": 45
+    }
+  },
+  " uphill_ downhill_ downhill_20-45%": {
+    "modifier": 0.10499999999999998,
+    "difficulty": 6,
+    "rationale": "",
+    "color": {
+      "r": 159,
+      "g": 43,
+      "b": 43
+    }
+  },
+  "flat_ sidehill_ downhill_20-45%": {
+    "modifier": 0.10499999999999998,
+    "difficulty": 6,
+    "rationale": "",
+    "color": {
+      "r": 159,
+      "g": 43,
+      "b": 43
+    }
+  },
+  " uphill_ sidehill_ uphill_20-45%": {
+    "modifier": 0.10499999999999998,
+    "difficulty": 6,
+    "rationale": "",
+    "color": {
+      "r": 159,
+      "g": 43,
+      "b": 43
+    }
+  },
+  " downhill_ downhill_ flat_20-45%": {
+    "modifier": 0.10499999999999998,
+    "difficulty": 6,
+    "rationale": "",
+    "color": {
+      "r": 159,
+      "g": 43,
+      "b": 43
+    }
+  },
+  " uphill_flat_ downhill_<20%": {
+    "modifier": 0.10499999999999998,
+    "difficulty": 6,
+    "rationale": "",
+    "color": {
+      "r": 159,
+      "g": 43,
+      "b": 43
+    }
+  },
+  "flat_ downhill_ downhill_20-45%": {
+    "modifier": 0.12249999999999998,
+    "difficulty": 6,
+    "rationale": "",
+    "color": {
+      "r": 162,
+      "g": 40,
+      "b": 40
+    }
+  },
+  " sidehill_flat_ downhill_20-45%": {
+    "modifier": 0.12249999999999998,
+    "difficulty": 6,
+    "rationale": "",
+    "color": {
+      "r": 162,
+      "g": 40,
+      "b": 40
+    }
+  },
+  " uphill_ downhill_ uphill_20-45%": {
+    "modifier": 0.12249999999999998,
+    "difficulty": 6,
+    "rationale": "",
+    "color": {
+      "r": 162,
+      "g": 40,
+      "b": 40
+    }
+  },
+  "flat_ sidehill_ uphill_20-45%": {
+    "modifier": 0.12249999999999998,
+    "difficulty": 6,
+    "rationale": "",
+    "color": {
+      "r": 162,
+      "g": 40,
+      "b": 40
+    }
+  },
+  "flat_flat_ downhill_<20%": {
+    "modifier": 0.12249999999999998,
+    "difficulty": 6,
+    "rationale": "",
+    "color": {
+      "r": 162,
+      "g": 40,
+      "b": 40
+    }
+  },
+  " downhill_flat_ downhill_20-45%": {
+    "modifier": 0.13999999999999999,
+    "difficulty": 7,
+    "rationale": "",
+    "color": {
+      "r": 165,
+      "g": 38,
+      "b": 38
+    }
+  },
+  "flat_ downhill_ uphill_20-45%": {
+    "modifier": 0.13999999999999999,
+    "difficulty": 7,
+    "rationale": "",
+    "color": {
+      "r": 165,
+      "g": 38,
+      "b": 38
+    }
+  },
+  " uphill_ uphill_ downhill_<20%": {
+    "modifier": 0.13999999999999999,
+    "difficulty": 7,
+    "rationale": "",
+    "color": {
+      "r": 165,
+      "g": 38,
+      "b": 38
+    }
+  },
+  " uphill_flat_ flat_<20%": {
+    "modifier": 0.13999999999999999,
+    "difficulty": 7,
+    "rationale": "",
+    "color": {
+      "r": 165,
+      "g": 38,
+      "b": 38
+    }
+  },
+  " sidehill_ sidehill_ uphill_20-45%": {
+    "modifier": 0.15749999999999997,
+    "difficulty": 7,
+    "rationale": "",
+    "color": {
+      "r": 168,
+      "g": 36,
+      "b": 36
+    }
+  },
+  "flat_flat_ flat_<20%": {
+    "modifier": 0.15749999999999997,
+    "difficulty": 7,
+    "rationale": "",
+    "color": {
+      "r": 168,
+      "g": 36,
+      "b": 36
+    }
+  },
+  " sidehill_ uphill_ downhill_20-45%": {
+    "modifier": 0.175,
+    "difficulty": 7,
+    "rationale": "",
+    "color": {
+      "r": 171,
+      "g": 33,
+      "b": 33
+    }
+  },
+  " sidehill_ downhill_ uphill_20-45%": {
+    "modifier": 0.175,
+    "difficulty": 7,
+    "rationale": "",
+    "color": {
+      "r": 171,
+      "g": 33,
+      "b": 33
+    }
+  },
+  " downhill_ uphill_ uphill_20-45%": {
+    "modifier": 0.175,
+    "difficulty": 7,
+    "rationale": "",
+    "color": {
+      "r": 171,
+      "g": 33,
+      "b": 33
+    }
+  },
+  " sidehill_ uphill_ uphill_20-45%": {
+    "modifier": 0.175,
+    "difficulty": 7,
+    "rationale": "",
+    "color": {
+      "r": 171,
+      "g": 33,
+      "b": 33
+    }
+  },
+  "flat_ uphill_ downhill_<20%": {
+    "modifier": 0.175,
+    "difficulty": 7,
+    "rationale": "",
+    "color": {
+      "r": 171,
+      "g": 33,
+      "b": 33
+    }
+  },
+  " downhill_ uphill_ downhill_20-45%": {
+    "modifier": 0.19249999999999998,
+    "difficulty": 7,
+    "rationale": "",
+    "color": {
+      "r": 174,
+      "g": 31,
+      "b": 31
+    }
+  },
+  " downhill_ sidehill_ uphill_20-45%": {
+    "modifier": 0.19249999999999998,
+    "difficulty": 7,
+    "rationale": "",
+    "color": {
+      "r": 174,
+      "g": 31,
+      "b": 31
+    }
+  },
+  " sidehill_flat_ downhill_<20%": {
+    "modifier": 0.19249999999999998,
+    "difficulty": 7,
+    "rationale": "",
+    "color": {
+      "r": 174,
+      "g": 31,
+      "b": 31
+    }
+  },
+  " uphill_ uphill_ uphill_<20%": {
+    "modifier": 0.19249999999999998,
+    "difficulty": 7,
+    "rationale": "",
+    "color": {
+      "r": 174,
+      "g": 31,
+      "b": 31
+    }
+  },
+  " sidehill_ sidehill_ downhill_20-45%": {
+    "modifier": 0.20999999999999996,
+    "difficulty": 8,
+    "rationale": "",
+    "color": {
+      "r": 177,
+      "g": 29,
+      "b": 29
+    }
+  },
+  " downhill_ downhill_ uphill_20-45%": {
+    "modifier": 0.20999999999999996,
+    "difficulty": 8,
+    "rationale": "",
+    "color": {
+      "r": 177,
+      "g": 29,
+      "b": 29
+    }
+  },
+  " sidehill_flat_ uphill_20-45%": {
+    "modifier": 0.20999999999999996,
+    "difficulty": 8,
+    "rationale": "",
+    "color": {
+      "r": 177,
+      "g": 29,
+      "b": 29
+    }
+  },
+  " uphill_ sidehill_ downhill_<20%": {
+    "modifier": 0.20999999999999996,
+    "difficulty": 8,
+    "rationale": "",
+    "color": {
+      "r": 177,
+      "g": 29,
+      "b": 29
+    }
+  },
+  " uphill_ sidehill_ uphill_<20%": {
+    "modifier": 0.20999999999999996,
+    "difficulty": 8,
+    "rationale": "",
+    "color": {
+      "r": 177,
+      "g": 29,
+      "b": 29
+    }
+  },
+  "flat_ uphill_ uphill_<20%": {
+    "modifier": 0.20999999999999996,
+    "difficulty": 8,
+    "rationale": "",
+    "color": {
+      "r": 177,
+      "g": 29,
+      "b": 29
+    }
+  },
+  " sidehill_ downhill_ downhill_20-45%": {
+    "modifier": 0.22749999999999998,
+    "difficulty": 8,
+    "rationale": "",
+    "color": {
+      "r": 180,
+      "g": 26,
+      "b": 26
+    }
+  },
+  "flat_ sidehill_ downhill_<20%": {
+    "modifier": 0.22749999999999998,
+    "difficulty": 8,
+    "rationale": "",
+    "color": {
+      "r": 180,
+      "g": 26,
+      "b": 26
+    }
+  },
+  " uphill_flat_ uphill_<20%": {
+    "modifier": 0.22749999999999998,
+    "difficulty": 8,
+    "rationale": "",
+    "color": {
+      "r": 180,
+      "g": 26,
+      "b": 26
+    }
+  },
+  " downhill_ downhill_ downhill_20-45%": {
+    "modifier": 0.24499999999999997,
+    "difficulty": 8,
+    "rationale": "",
+    "color": {
+      "r": 183,
+      "g": 24,
+      "b": 24
+    }
+  },
+  " downhill_ sidehill_ downhill_20-45%": {
+    "modifier": 0.24499999999999997,
+    "difficulty": 8,
+    "rationale": "",
+    "color": {
+      "r": 183,
+      "g": 24,
+      "b": 24
+    }
+  },
+  " downhill_flat_ uphill_20-45%": {
+    "modifier": 0.24499999999999997,
+    "difficulty": 8,
+    "rationale": "",
+    "color": {
+      "r": 183,
+      "g": 24,
+      "b": 24
+    }
+  },
+  " uphill_ downhill_ downhill_<20%": {
+    "modifier": 0.24499999999999997,
+    "difficulty": 8,
+    "rationale": "",
+    "color": {
+      "r": 183,
+      "g": 24,
+      "b": 24
+    }
+  },
+  "flat_ sidehill_ uphill_<20%": {
+    "modifier": 0.24499999999999997,
+    "difficulty": 8,
+    "rationale": "",
+    "color": {
+      "r": 183,
+      "g": 24,
+      "b": 24
+    }
+  },
+  "flat_flat_ uphill_<20%": {
+    "modifier": 0.24499999999999997,
+    "difficulty": 8,
+    "rationale": "",
+    "color": {
+      "r": 183,
+      "g": 24,
+      "b": 24
+    }
+  },
+  "flat_ downhill_ downhill_<20%": {
+    "modifier": 0.26249999999999996,
+    "difficulty": 8,
+    "rationale": "",
+    "color": {
+      "r": 185,
+      "g": 22,
+      "b": 22
+    }
+  },
+  " sidehill_ uphill_ uphill_<20%": {
+    "modifier": 0.26249999999999996,
+    "difficulty": 8,
+    "rationale": "",
+    "color": {
+      "r": 185,
+      "g": 22,
+      "b": 22
+    }
+  },
+  " uphill_ sidehill_ flat_<20%": {
+    "modifier": 0.26249999999999996,
+    "difficulty": 8,
+    "rationale": "",
+    "color": {
+      "r": 185,
+      "g": 22,
+      "b": 22
+    }
+  },
+  " uphill_ uphill_ flat_<20%": {
+    "modifier": 0.26249999999999996,
+    "difficulty": 8,
+    "rationale": "",
+    "color": {
+      "r": 185,
+      "g": 22,
+      "b": 22
+    }
+  },
+  " sidehill_ sidehill_ downhill_<20%": {
+    "modifier": 0.27999999999999997,
+    "difficulty": 9,
+    "rationale": "",
+    "color": {
+      "r": 188,
+      "g": 19,
+      "b": 19
+    }
+  },
+  " sidehill_ uphill_ downhill_<20%": {
+    "modifier": 0.27999999999999997,
+    "difficulty": 9,
+    "rationale": "",
+    "color": {
+      "r": 188,
+      "g": 19,
+      "b": 19
+    }
+  },
+  " downhill_flat_ downhill_<20%": {
+    "modifier": 0.27999999999999997,
+    "difficulty": 9,
+    "rationale": "",
+    "color": {
+      "r": 188,
+      "g": 19,
+      "b": 19
+    }
+  },
+  " downhill_ uphill_ uphill_<20%": {
+    "modifier": 0.27999999999999997,
+    "difficulty": 9,
+    "rationale": "",
+    "color": {
+      "r": 188,
+      "g": 19,
+      "b": 19
+    }
+  },
+  " uphill_ downhill_ flat_<20%": {
+    "modifier": 0.27999999999999997,
+    "difficulty": 9,
+    "rationale": "",
+    "color": {
+      "r": 188,
+      "g": 19,
+      "b": 19
+    }
+  },
+  "flat_ sidehill_ flat_<20%": {
+    "modifier": 0.27999999999999997,
+    "difficulty": 9,
+    "rationale": "",
+    "color": {
+      "r": 188,
+      "g": 19,
+      "b": 19
+    }
+  },
+  "flat_ uphill_ flat_<20%": {
+    "modifier": 0.27999999999999997,
+    "difficulty": 9,
+    "rationale": "",
+    "color": {
+      "r": 188,
+      "g": 19,
+      "b": 19
+    }
+  },
+  " sidehill_ downhill_ downhill_<20%": {
+    "modifier": 0.2975,
+    "difficulty": 9,
+    "rationale": "",
+    "color": {
+      "r": 191,
+      "g": 17,
+      "b": 17
+    }
+  },
+  " downhill_ sidehill_ downhill_<20%": {
+    "modifier": 0.2975,
+    "difficulty": 9,
+    "rationale": "",
+    "color": {
+      "r": 191,
+      "g": 17,
+      "b": 17
+    }
+  },
+  " downhill_ uphill_ downhill_<20%": {
+    "modifier": 0.2975,
+    "difficulty": 9,
+    "rationale": "",
+    "color": {
+      "r": 191,
+      "g": 17,
+      "b": 17
+    }
+  },
+  " uphill_ downhill_ uphill_<20%": {
+    "modifier": 0.2975,
+    "difficulty": 9,
+    "rationale": "",
+    "color": {
+      "r": 191,
+      "g": 17,
+      "b": 17
+    }
+  },
+  " sidehill_flat_ uphill_<20%": {
+    "modifier": 0.2975,
+    "difficulty": 9,
+    "rationale": "",
+    "color": {
+      "r": 191,
+      "g": 17,
+      "b": 17
+    }
+  },
+  " sidehill_flat_ flat_<20%": {
+    "modifier": 0.2975,
+    "difficulty": 9,
+    "rationale": "",
+    "color": {
+      "r": 191,
+      "g": 17,
+      "b": 17
+    }
+  },
+  " downhill_ downhill_ downhill_<20%": {
+    "modifier": 0.31499999999999995,
+    "difficulty": 9,
+    "rationale": "",
+    "color": {
+      "r": 194,
+      "g": 15,
+      "b": 15
+    }
+  },
+  "flat_ downhill_ uphill_<20%": {
+    "modifier": 0.31499999999999995,
+    "difficulty": 9,
+    "rationale": "",
+    "color": {
+      "r": 194,
+      "g": 15,
+      "b": 15
+    }
+  },
+  "flat_ downhill_ flat_<20%": {
+    "modifier": 0.31499999999999995,
+    "difficulty": 9,
+    "rationale": "",
+    "color": {
+      "r": 194,
+      "g": 15,
+      "b": 15
+    }
+  },
+  " sidehill_ sidehill_ flat_<20%": {
+    "modifier": 0.31499999999999995,
+    "difficulty": 9,
+    "rationale": "",
+    "color": {
+      "r": 194,
+      "g": 15,
+      "b": 15
+    }
+  },
+  " sidehill_ uphill_ flat_<20%": {
+    "modifier": 0.31499999999999995,
+    "difficulty": 9,
+    "rationale": "",
+    "color": {
+      "r": 194,
+      "g": 15,
+      "b": 15
+    }
+  },
+  " sidehill_ downhill_ uphill_<20%": {
+    "modifier": 0.33249999999999996,
+    "difficulty": 9,
+    "rationale": "",
+    "color": {
+      "r": 197,
+      "g": 12,
+      "b": 12
+    }
+  },
+  " downhill_ sidehill_ uphill_<20%": {
+    "modifier": 0.33249999999999996,
+    "difficulty": 9,
+    "rationale": "",
+    "color": {
+      "r": 197,
+      "g": 12,
+      "b": 12
+    }
+  },
+  " sidehill_ sidehill_ uphill_<20%": {
+    "modifier": 0.33249999999999996,
+    "difficulty": 9,
+    "rationale": "",
+    "color": {
+      "r": 197,
+      "g": 12,
+      "b": 12
+    }
+  },
+  " sidehill_ downhill_ flat_<20%": {
+    "modifier": 0.33249999999999996,
+    "difficulty": 9,
+    "rationale": "",
+    "color": {
+      "r": 197,
+      "g": 12,
+      "b": 12
+    }
+  },
+  " downhill_ uphill_ flat_<20%": {
+    "modifier": 0.33249999999999996,
+    "difficulty": 9,
+    "rationale": "",
+    "color": {
+      "r": 197,
+      "g": 12,
+      "b": 12
+    }
+  },
+  " downhill_flat_ flat_<20%": {
+    "modifier": 0.33249999999999996,
+    "difficulty": 9,
+    "rationale": "",
+    "color": {
+      "r": 197,
+      "g": 12,
+      "b": 12
+    }
+  },
+  " downhill_ downhill_ uphill_<20%": {
+    "modifier": 0.35,
+    "difficulty": 10,
+    "rationale": "",
+    "color": {
+      "r": 200,
+      "g": 10,
+      "b": 10
+    }
+  },
+  " downhill_flat_ uphill_<20%": {
+    "modifier": 0.35,
+    "difficulty": 10,
+    "rationale": "",
+    "color": {
+      "r": 200,
+      "g": 10,
+      "b": 10
+    }
+  },
+  " downhill_ downhill_ flat_<20%": {
+    "modifier": 0.35,
+    "difficulty": 10,
+    "rationale": "",
+    "color": {
+      "r": 200,
+      "g": 10,
+      "b": 10
+    }
+  },
+  " downhill_ sidehill_ flat_<20%": {
+    "modifier": 0.35,
+    "difficulty": 10,
+    "rationale": "",
+    "color": {
+      "r": 200,
+      "g": 10,
+      "b": 10
+    }
+  }
+}
